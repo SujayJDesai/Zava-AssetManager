@@ -1,0 +1,65 @@
+{
+  "GeneratedAt": "2026-08-17T09:10:34.0000000Z",
+  "ProjectPath": ".",
+  "Summary": {
+    "TotalFindings": 3,
+    "CveCount": 1,
+    "CweCount": 2,
+    "BySeverity": {
+      "mandatory": 1,
+      "optional": 1,
+      "potential": 1
+    },
+    "ByCategory": {
+      "CVE": 1,
+      "Credentials & Secrets": 2
+    },
+    "TotalRulesAssessed": 59,
+    "RulesPassed": 57
+  },
+  "CveFindings": [
+    {
+      "Id": "CVE-2024-0056",
+      "Name": "Microsoft.Data.SqlClient and System.Data.SqlClient vulnerable to SQL Data Provider Security Feature Bypass",
+      "Category": "CVE",
+      "Severity": "mandatory",
+      "StoryPoint": 1,
+      "Description": "[CVE-2024-0056](https://github.com/advisories/GHSA-98g6-xh36-x2p7): Microsoft.Data.SqlClient and System.Data.SqlClient vulnerable to SQL Data Provider Security Feature Bypass\n\nSeverity: HIGH\n\nAffected dependencies:\n  - Microsoft.Data.SqlClient:2.1.4 (declared at packages.config:14), vulnerable range: < 2.1.7\n\nRecommended fix:\n  - Upgrade Microsoft.Data.SqlClient to 2.1.7 or later (or to a version >= 5.1.3 for the latest major line)",
+      "Files": [
+        "packages.config:14"
+      ],
+      "Explanation": "[CVE-2024-0056](https://github.com/advisories/GHSA-98g6-xh36-x2p7): Microsoft.Data.SqlClient and System.Data.SqlClient vulnerable to SQL Data Provider Security Feature Bypass\n\nSeverity: HIGH\n\nAffected dependencies:\n  - Microsoft.Data.SqlClient:2.1.4 (declared at packages.config:14), vulnerable range: < 2.1.7\n\nRecommended fix:\n  - Upgrade Microsoft.Data.SqlClient to 2.1.7 or later (or to a version >= 5.1.3 for the latest major line)"
+    }
+  ],
+  "CweFindings": [
+    {
+      "Id": "CWE-732",
+      "Name": "Incorrect Permission Assignment for Critical Resource",
+      "Category": "Credentials & Secrets",
+      "Severity": "optional",
+      "StoryPoint": 5,
+      "Description": "The product specifies permissions for a security-critical resource in a way that allows that resource to be read or modified by unintended actors.",
+      "Files": [
+        "Services/NotificationService.cs:23"
+      ],
+      "Explanation": "In `NotificationService` constructor, when the MSMQ notification queue is created, `_queue.SetPermissions(\"Everyone\", MessageQueueAccessRights.FullControl)` grants the built-in 'Everyone' group full control (read, write, and manage) over the message queue. This allows any local user or process to read, send, or delete notification messages, which is an overly permissive assignment for a security-critical resource."
+    },
+    {
+      "Id": "CWE-778",
+      "Name": "Insufficient Logging",
+      "Category": "Credentials & Secrets",
+      "Severity": "potential",
+      "StoryPoint": 3,
+      "Description": "When a security-critical event occurs, the product either does not record the event or omits important details about the event when logging it.",
+      "Files": [
+        "Controllers/NotificationsController.cs:32",
+        "Controllers/NotificationsController.cs:54",
+        "Controllers/BaseController.cs:34",
+        "Controllers/CoursesController.cs:240",
+        "Services/NotificationService.cs:66",
+        "Services/NotificationService.cs:85"
+      ],
+      "Explanation": "Exceptions in notification handling and file operations (e.g. `NotificationsController.GetNotifications`, `NotificationService.SendNotification`/`ReceiveNotification`, and `CoursesController.DeleteConfirmed`) are caught and only written via `System.Diagnostics.Debug.WriteLine`, which is compiled out / not captured in Release builds and is not persisted to any durable log store. Failures of these operations (including file deletion and message queue send/receive failures) are therefore effectively unlogged in production, providing no audit trail for these events."
+    }
+  ]
+}
