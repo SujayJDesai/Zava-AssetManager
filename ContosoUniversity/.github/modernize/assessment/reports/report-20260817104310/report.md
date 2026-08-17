@@ -45,7 +45,6 @@
 <summary><b>Connection strings without configuration builders detected</b> — affected files</summary>
 
 - `Web.config`
-- `Web.config`
 
 </details>
 
